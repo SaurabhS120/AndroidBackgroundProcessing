@@ -69,19 +69,15 @@ class DummyDownloadService : Service() {
         serviceScope.launch {
             for (progress:Int in -1..100){
               updateNotification(progress)
-                brodcastProgress(progress)
+                broadcastProgress(progress)
               delay(1000L)
             }
             stopSelf()
         }
     }
 
-    private fun brodcastProgress(progress: Int) {
-        val intent = Intent("download-progress").apply {
-            putExtra("progress",progress)
-        }
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
-    }
+    var downloadBroadcastHelper = DownloadProgressBroadcastHelper()
+    private fun broadcastProgress(progress: Int) = downloadBroadcastHelper.broadcastProgress(this,progress)
 
     private fun onStopDownload() {
         stopSelf()
@@ -132,5 +128,13 @@ class DownloadNotificationHelper{
         return  notificationBuilder!!
             .setProgress(100, progress, progress == -1)
             .build()
+    }
+}
+class DownloadProgressBroadcastHelper{
+    fun broadcastProgress(context:Context,progress: Int) {
+        val intent = Intent("download-progress").apply {
+            putExtra("progress",progress)
+        }
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }
 }
