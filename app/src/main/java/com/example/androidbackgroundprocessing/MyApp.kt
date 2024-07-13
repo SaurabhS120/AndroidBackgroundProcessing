@@ -13,7 +13,7 @@ class MyApp:Application() {
             val channel = NotificationChannel(
                 "download_channel",
                 "Download channel",
-                NotificationManager.IMPORTANCE_HIGH
+                NotificationManager.IMPORTANCE_LOW
             )
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
