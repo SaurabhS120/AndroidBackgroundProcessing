@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.androidbackgroundprocessing.DummyDownloadService.DownloadActions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -68,10 +69,18 @@ class DummyDownloadService : Service() {
         serviceScope.launch {
             for (progress:Int in -1..100){
               updateNotification(progress)
+                brodcastProgress(progress)
               delay(1000L)
             }
             stopSelf()
         }
+    }
+
+    private fun brodcastProgress(progress: Int) {
+        val intent = Intent("download-progress").apply {
+            putExtra("progress",progress)
+        }
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     private fun onStopDownload() {

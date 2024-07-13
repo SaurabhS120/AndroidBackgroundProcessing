@@ -1,6 +1,9 @@
 package com.example.androidbackgroundprocessing
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.widget.Button
@@ -10,11 +13,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 class MainActivity : AppCompatActivity() {
     lateinit var textView: TextView
     lateinit var startButton: Button
     lateinit var stopButton: Button
+    private val localReceiver = DownloadProgressBroadcastReceiver()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -42,5 +47,22 @@ class MainActivity : AppCompatActivity() {
                 startService(it)
             }
         }
+        LocalBroadcastManager.getInstance(this).registerReceiver(localReceiver, IntentFilter("download-progress"))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(localReceiver)
+    }
+    inner class DownloadProgressBroadcastReceiver: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val progress:Int? = intent?.getIntExtra("progress",0)
+            textView.text = when(progress){
+                -1->"Download starting"
+                100->"Download completed"
+                else->"Download Progress : $progress%"
+            }
+        }
+
     }
 }
