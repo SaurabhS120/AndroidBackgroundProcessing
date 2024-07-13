@@ -85,6 +85,7 @@ class DummyDownloadService : Service() {
 
     private fun onStopDownload() {
         stopSelf()
+        stopForeground(STOP_FOREGROUND_REMOVE)
     }
     fun updateNotification(progress: Int){
         val notification = buildNotification(progress)
