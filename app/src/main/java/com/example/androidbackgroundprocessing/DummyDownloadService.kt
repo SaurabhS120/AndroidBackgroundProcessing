@@ -22,7 +22,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class DummyDownloadService(val downloadBroadcastHelper:DownloadProgressBroadcastHelper,val notificationHelper : DownloadNotificationHelper): Service() {
+class DummyDownloadService: Service() {
+    val downloadBroadcastHelper=DownloadProgressBroadcastHelper()
+    val notificationHelper = DownloadNotificationHelper()
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
     override fun onBind(intent: Intent?): IBinder? {
