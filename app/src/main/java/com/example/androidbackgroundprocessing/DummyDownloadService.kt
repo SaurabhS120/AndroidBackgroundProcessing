@@ -22,7 +22,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class DummyDownloadService : Service() {
+class DummyDownloadService(val downloadBroadcastHelper:DownloadProgressBroadcastHelper,val notificationHelper : DownloadNotificationHelper): Service() {
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
     override fun onBind(intent: Intent?): IBinder? {
@@ -76,29 +76,14 @@ class DummyDownloadService : Service() {
         }
     }
 
-    var downloadBroadcastHelper = DownloadProgressBroadcastHelper()
     private fun broadcastProgress(progress: Int) = downloadBroadcastHelper.broadcastProgress(this,progress)
 
     private fun onStopDownload() {
         stopSelf()
         stopForeground(STOP_FOREGROUND_REMOVE)
     }
-    fun updateNotification(progress: Int){
-        val notification = buildNotification(progress)
-        with(NotificationManagerCompat.from(applicationContext)) {
-            if (ActivityCompat.checkSelfPermission(
-                    applicationContext,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                return
-            } else{
-                notify(1, notification)
-            }
-        }
-    }
+    fun updateNotification(progress: Int) = notificationHelper.updateNotification(applicationContext,progress)
 
-    val notificationHelper = DownloadNotificationHelper()
     fun buildNotification(progress: Int = 0)=notificationHelper.buildNotification(this,progress)
 }
 class DownloadNotificationHelper{
@@ -128,6 +113,20 @@ class DownloadNotificationHelper{
         return  notificationBuilder!!
             .setProgress(100, progress, progress == -1)
             .build()
+    }
+    fun updateNotification(applicationContext:Context,progress: Int){
+        val notification = buildNotification(applicationContext,progress)
+        with(NotificationManagerCompat.from(applicationContext)) {
+            if (ActivityCompat.checkSelfPermission(
+                    applicationContext,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            } else{
+                notify(1, notification)
+            }
+        }
     }
 }
 class DownloadProgressBroadcastHelper{
