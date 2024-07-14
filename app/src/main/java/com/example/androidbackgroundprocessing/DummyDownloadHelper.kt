@@ -4,11 +4,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class DummyDownloadHelper{
+open class DummyDownloadHelper{
     fun download(): Flow<Int> = flow {
         for (progress: Int in -1..100) {
             emit(progress)
-            delay(1000L)
+            dummyDelay()
         }
+    }
+    open suspend fun dummyDelay(){
+        delay(1000L)
     }
 }
