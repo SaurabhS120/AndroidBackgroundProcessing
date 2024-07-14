@@ -27,7 +27,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class DummyDownloadService: Service() {
     @Inject lateinit var downloadBroadcastHelper : DownloadProgressBroadcastHelper
-    val notificationHelper = DownloadNotificationHelper()
+    @Inject lateinit var notificationHelper : DownloadNotificationHelper
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
     override fun onBind(intent: Intent?): IBinder? {

@@ -14,4 +14,10 @@ object DownloadModule {
     fun provideDownloadProgressBroadcastHelper():DownloadProgressBroadcastHelper{
         return DownloadProgressBroadcastHelper()
     }
+
+    @Provides
+    @Singleton
+    fun provideDownloadNotificationHelper():DownloadNotificationHelper{
+        return DownloadNotificationHelper()
+    }
 }
