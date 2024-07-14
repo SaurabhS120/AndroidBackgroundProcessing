@@ -13,10 +13,10 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="DownloadProgressBroadcastHelperTest">
+      <SelectionState runConfigName="MyBroadcastReceiverTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="MyBroadcastReceiverTest">
+      <SelectionState runConfigName="DummyDownloadServiceTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

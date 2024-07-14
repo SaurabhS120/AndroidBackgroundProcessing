@@ -18,6 +18,14 @@ class DummyDownloadService: Service() {
     @Inject lateinit var downloadBroadcastHelper : DownloadProgressBroadcastHelper
     @Inject lateinit var notificationHelper : DownloadNotificationHelper
     @Inject lateinit var dummyDownloadHelper : DummyDownloadHelper
+    val downloadProgressWatcher:DownloadProgressWatcher by  lazy {
+        return@lazy MultiDownloadProgressWatcher(
+            listOf(
+                notificationHelper,
+                downloadBroadcastHelper,
+            )
+        )
+    }
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
     override fun onBind(intent: Intent?): IBinder? {
@@ -42,6 +50,7 @@ class DummyDownloadService: Service() {
                             0
                         }
                     )
+                    downloadProgressWatcher.onCreate(this)
                     onStartDownload()
                 } else {
                     Toast.makeText(
@@ -63,21 +72,17 @@ class DummyDownloadService: Service() {
     private fun onStartDownload() {
         serviceScope.launch {
             dummyDownloadHelper.download().collect{
-                updateNotification(it)
-                broadcastProgress(it)
+                downloadProgressWatcher.onUpdate(it)
             }
             stopSelf()
         }
     }
 
-    private fun broadcastProgress(progress: Int) = downloadBroadcastHelper.broadcastProgress(this,progress)
 
     private fun onStopDownload() {
         stopSelf()
         stopForeground(STOP_FOREGROUND_REMOVE)
     }
-    fun updateNotification(progress: Int) = notificationHelper.updateNotification(applicationContext,progress)
 
     fun buildNotification(progress: Int = 0)=notificationHelper.buildNotification(this,progress)
 }
-

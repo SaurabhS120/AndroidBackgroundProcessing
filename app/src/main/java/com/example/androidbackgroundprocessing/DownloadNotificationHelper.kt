@@ -10,7 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
-class DownloadNotificationHelper{
+class DownloadNotificationHelper:DownloadProgressWatcher{
     private var notificationBuilder : NotificationCompat.Builder? = null
     fun buildNotification(context: Context, progress: Int = 0): Notification {
         if(notificationBuilder==null){
@@ -49,6 +49,19 @@ class DownloadNotificationHelper{
             } else{
                 notify(1, notification)
             }
+        }
+    }
+
+    var context:Context? = null
+    override fun onCreate(context: Context) {
+        this.context = context
+    }
+
+    override fun onUpdate(progress: Int) {
+        if(context != null){
+            updateNotification(context!!,progress)
+        }else{
+            throw Exception("Context is null, onCreate was not called")
         }
     }
 }
