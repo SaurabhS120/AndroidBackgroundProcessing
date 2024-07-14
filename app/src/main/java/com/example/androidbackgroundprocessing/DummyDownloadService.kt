@@ -22,10 +22,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DummyDownloadService: Service() {
-    val downloadBroadcastHelper=DownloadProgressBroadcastHelper()
+    @Inject lateinit var downloadBroadcastHelper : DownloadProgressBroadcastHelper
     val notificationHelper = DownloadNotificationHelper()
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
