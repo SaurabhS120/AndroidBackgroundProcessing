@@ -16,12 +16,14 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.androidbackgroundprocessing.DummyDownloadService.DownloadActions
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class DummyDownloadService: Service() {
     val downloadBroadcastHelper=DownloadProgressBroadcastHelper()
     val notificationHelper = DownloadNotificationHelper()
