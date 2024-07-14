@@ -21,6 +21,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,6 +30,7 @@ import javax.inject.Inject
 class DummyDownloadService: Service() {
     @Inject lateinit var downloadBroadcastHelper : DownloadProgressBroadcastHelper
     @Inject lateinit var notificationHelper : DownloadNotificationHelper
+    @Inject lateinit var dummyDownloadHelper : DummyDownloadHelper
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
     override fun onBind(intent: Intent?): IBinder? {
@@ -72,10 +75,9 @@ class DummyDownloadService: Service() {
     }
     private fun onStartDownload() {
         serviceScope.launch {
-            for (progress:Int in -1..100){
-              updateNotification(progress)
-                broadcastProgress(progress)
-              delay(1000L)
+            dummyDownloadHelper.download().collect{
+                updateNotification(it)
+                broadcastProgress(it)
             }
             stopSelf()
         }
@@ -90,6 +92,14 @@ class DummyDownloadService: Service() {
     fun updateNotification(progress: Int) = notificationHelper.updateNotification(applicationContext,progress)
 
     fun buildNotification(progress: Int = 0)=notificationHelper.buildNotification(this,progress)
+}
+class DummyDownloadHelper{
+    fun download(): Flow<Int> = flow {
+        for (progress:Int in -1..100){
+            emit(progress)
+            delay(1000L)
+        }
+    }
 }
 class DownloadNotificationHelper{
     private var notificationBuilder : NotificationCompat.Builder? = null

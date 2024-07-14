@@ -20,4 +20,10 @@ object DownloadModule {
     fun provideDownloadNotificationHelper():DownloadNotificationHelper{
         return DownloadNotificationHelper()
     }
+
+    @Provides
+    @Singleton
+    fun provideDummyDownloadHelper():DummyDownloadHelper{
+        return DummyDownloadHelper()
+    }
 }
