@@ -18,11 +18,9 @@ class DummyDownloadServiceWorker(
     val dummyDownloadService: DummyDownloadServiceInterface,
     val dummyDownloadToastHelper: DownloadToastHelperInterface,
     val foregroundServiceHelper: ForegroundServiceHelperInterface,
-    private val serviceJob: Job = Job(),
-    private val serviceScope: CoroutineScope = CoroutineScope(Dispatchers.IO + serviceJob)
     ):DummyDownloadServiceWorkerInterface {
 
-    override fun onStartDownloadAction() {
+    override suspend fun onStartDownloadAction(){
         onCreate()
         val notification = buildNotification(-1)
         if(startForegroundService(notification)){
@@ -44,17 +42,11 @@ class DummyDownloadServiceWorker(
         dummyDownloadService.stopSelf()
         dummyDownloadService.stopForeground(STOP_FOREGROUND_REMOVE)
     }
-    private fun onStartDownload() {
-        serviceScope.launch {
-            dummyDownloadHelper.download().collect{
-                downloadProgressNotifierClient.onUpdate(it)
-            }
-            dummyDownloadService.stopSelf()
+    private suspend fun onStartDownload() {
+        dummyDownloadHelper.download().collect{
+            downloadProgressNotifierClient.onUpdate(it)
         }
-    }
-
-    override fun onCancel() {
-        serviceJob.cancel()
+        dummyDownloadService.stopSelf()
     }
     fun buildNotification(progress: Int)=downloadProgressNotifierClient.buildNotification(progress)
 }

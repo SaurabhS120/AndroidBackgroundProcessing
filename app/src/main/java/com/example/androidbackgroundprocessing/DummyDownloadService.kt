@@ -14,11 +14,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class DummyDownloadService: Service(),DummyDownloadServiceInterface {
+    private val serviceJob: Job = Job()
+    private val serviceScope: CoroutineScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
     @Inject lateinit var downloadProgressNotifierClient: DownloadProgressNotifierClient
     @Inject lateinit var dummyDownloadHelper: DummyDownloadHelperInterface
@@ -45,7 +48,11 @@ class DummyDownloadService: Service(),DummyDownloadServiceInterface {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action.toString()) {
-            DownloadActions.START.toString()-> dummyDownloadServiceWorker.onStartDownloadAction()
+            DownloadActions.START.toString()-> {
+                serviceScope.launch {
+                    dummyDownloadServiceWorker.onStartDownloadAction()
+                }
+            }
             DownloadActions.STOP.toString() -> dummyDownloadServiceWorker.onStopDownloadAction()
         }
         return super.onStartCommand(intent, flags, startId)
@@ -54,7 +61,7 @@ class DummyDownloadService: Service(),DummyDownloadServiceInterface {
 
     override fun onDestroy() {
         super.onDestroy()
-        dummyDownloadServiceWorker.onCancel()
+        serviceScope.cancel()
     }
 
     override fun getContext(): Context {

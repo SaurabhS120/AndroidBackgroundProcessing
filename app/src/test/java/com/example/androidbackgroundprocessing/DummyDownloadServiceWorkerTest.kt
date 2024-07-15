@@ -39,11 +39,7 @@ class DummyDownloadServiceWorkerTest{
 
     @Before
     fun setup(){
-        serviceJob = Job()
-        serviceScope =  CoroutineScope(Dispatchers.IO + serviceJob)
         dummyDownloadServiceWorker = DummyDownloadServiceWorker(
-            serviceJob = serviceJob,
-            serviceScope = serviceScope,
             dummyDownloadHelper = mockDummyDownloadHelper,
             dummyDownloadToastHelper = mockDummyDownloadToastHelper,
             dummyDownloadService = mockDummyDownloadService,
@@ -60,8 +56,11 @@ class DummyDownloadServiceWorkerTest{
         Mockito.`when`(mockForegroundServiceHelper.startForegroundService(mockNotification)).thenAnswer {
             false
         }
-        dummyDownloadServiceWorker.onStartDownloadAction()
-        Mockito.verify(mockDummyDownloadToastHelper,Mockito.times(1)).noNotificationNotSupported()
+        runBlocking{
+            dummyDownloadServiceWorker.onStartDownloadAction()
+            Mockito.verify(mockDummyDownloadToastHelper, Mockito.times(1))
+                .noNotificationNotSupported()
+        }
     }
 
     @Test
@@ -72,8 +71,8 @@ class DummyDownloadServiceWorkerTest{
         Mockito.`when`(mockForegroundServiceHelper.startForegroundService(mockNotification)).thenAnswer {
             true
         }
-        dummyDownloadServiceWorker.onStartDownloadAction()
         runBlocking{
+            dummyDownloadServiceWorker.onStartDownloadAction()
             serviceJob.join()
             Mockito.verify(mockDummyDownloadHelper, Mockito.times(1)).download()
         }
@@ -88,12 +87,11 @@ class DummyDownloadServiceWorkerTest{
             true
         }
         Mockito.`when`(mockDummyDownloadHelper.download()).thenAnswer {
-            (1..5).asFlow()
+            (-1..100).asFlow()
         }
-        dummyDownloadServiceWorker.onStartDownloadAction()
         runBlocking {
-            delay(100)
-            Mockito.verify(mockDownloadProgressNotifierClient, Mockito.times(5)).onUpdate(Mockito.anyInt())
+            dummyDownloadServiceWorker.onStartDownloadAction()
+            Mockito.verify(mockDownloadProgressNotifierClient, Mockito.times(102)).onUpdate(Mockito.anyInt())
         }
     }
 }

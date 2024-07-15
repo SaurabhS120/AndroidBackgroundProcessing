@@ -4,8 +4,7 @@ import android.app.Notification
 import android.content.Context
 
 interface DummyDownloadServiceWorkerInterface {
-    fun onCancel()
-    fun onStartDownloadAction()
+    suspend fun onStartDownloadAction()
     fun onStopDownloadAction()
     fun startForegroundService(notification: Notification): Boolean
 }
