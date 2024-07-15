@@ -38,7 +38,7 @@ class DownloadProgressNotifierClient @Inject constructor(
     }
 
     override fun onCancel() {
-        withContext(context){
+        ifContextAvailable(context){
             downloadWatcher.onCancel()
         }
     }
@@ -48,6 +48,12 @@ class DownloadProgressNotifierClient @Inject constructor(
             throw DownloadProgressWatcherNoContext()
         }else{
             return action(context)
+        }
+    }
+
+    private fun <T> ifContextAvailable(context:Context?, action:(context:Context)->T){
+        if(context != null){
+            action(context)
         }
     }
 }

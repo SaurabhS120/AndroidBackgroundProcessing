@@ -44,6 +44,13 @@ class DownloadNotificationHelper @Inject constructor(): DownloadNotificationHelp
             .setProgress(100, progress, progress == -1)
             .build()
     }
+    fun buildCancelledNotification(context: Context,): Notification {
+        return  NotificationCompat.Builder(context, "download_channel")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("Dummy Download")
+            .setContentText("Download cancelled")
+            .build()
+    }
     fun updateNotification(applicationContext: Context, progress: Int){
         val notification = buildNotification(applicationContext,progress)
         with(NotificationManagerCompat.from(applicationContext)) {
@@ -55,6 +62,20 @@ class DownloadNotificationHelper @Inject constructor(): DownloadNotificationHelp
                 return
             } else{
                 notify(1, notification)
+            }
+        }
+    }
+    fun cancelNotification(applicationContext: Context,){
+        val notification = buildCancelledNotification(applicationContext)
+        with(NotificationManagerCompat.from(applicationContext)) {
+            if (ActivityCompat.checkSelfPermission(
+                    applicationContext,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            } else{
+                notify(2, notification)
             }
         }
     }
@@ -73,9 +94,8 @@ class DownloadNotificationHelper @Inject constructor(): DownloadNotificationHelp
     }
 
     override fun onCancel() {
-
         if(context != null){
-            updateNotification(context!!,-1)
+            cancelNotification(context!!,)
         }else{
             throw throw DownloadProgressWatcherNoContext()
         }
