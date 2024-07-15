@@ -3,9 +3,14 @@ package com.example.androidbackgroundprocessing.downloadProgressWatchers
 import android.content.Context
 import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import javax.inject.Inject
 
-class DownloadProgressBroadcastHelper: DownloadProgressWatcher {
-    fun broadcastProgress(context: Context, progress: Int) {
+interface DownloadProgressBroadcastHelperInterface:DownloadProgressWatcher{
+    fun broadcastProgress(context: Context, progress: Int)
+}
+
+class DownloadProgressBroadcastHelper @Inject constructor(): DownloadProgressBroadcastHelperInterface {
+    override fun broadcastProgress(context: Context, progress: Int) {
         val intent = Intent("download-progress").apply {
             putExtra("progress",progress)
         }

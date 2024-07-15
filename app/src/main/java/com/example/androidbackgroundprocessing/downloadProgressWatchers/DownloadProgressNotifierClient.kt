@@ -6,8 +6,8 @@ import com.example.androidbackgroundprocessing.DownloadProgressNotifierClientInt
 import javax.inject.Inject
 
 class DownloadProgressNotifierClient @Inject constructor(
-    private val downloadBroadcastHelper : DownloadProgressBroadcastHelper,
-    private val downloadNotificationHelper : DownloadNotificationHelper,
+    private val downloadBroadcastHelper : DownloadProgressBroadcastHelperInterface,
+    private val downloadNotificationHelper : DownloadNotificationHelperInterface,
     ): DownloadProgressNotifierClientInterface {
     private val downloadWatcher = MultiDownloadProgressWatcher(
         listOf(

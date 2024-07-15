@@ -11,10 +11,15 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.androidbackgroundprocessing.DummyDownloadService
 import com.example.androidbackgroundprocessing.R
+import javax.inject.Inject
 
-class DownloadNotificationHelper: DownloadProgressWatcher {
+interface DownloadNotificationHelperInterface:DownloadProgressWatcher{
+    fun buildNotification(context: Context, progress: Int = 0): Notification
+}
+
+class DownloadNotificationHelper @Inject constructor(): DownloadNotificationHelperInterface {
     private var notificationBuilder : NotificationCompat.Builder? = null
-    fun buildNotification(context: Context, progress: Int = 0): Notification {
+    override fun buildNotification(context: Context, progress: Int): Notification {
         if(notificationBuilder==null){
 
             val notificationCancelIntent: Intent =
