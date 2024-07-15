@@ -29,4 +29,12 @@ class DownloadProgressBroadcastHelper @Inject constructor(): DownloadProgressBro
             throw DownloadProgressWatcherNoContext()
         }
     }
+
+    override fun onCancel() {
+        if(context != null){
+            broadcastProgress(context!!,-2)
+        }else{
+            throw DownloadProgressWatcherNoContext()
+        }
+    }
 }

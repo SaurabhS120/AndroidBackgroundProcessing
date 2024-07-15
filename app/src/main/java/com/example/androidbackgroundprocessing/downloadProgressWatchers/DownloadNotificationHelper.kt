@@ -71,4 +71,13 @@ class DownloadNotificationHelper @Inject constructor(): DownloadNotificationHelp
             throw throw DownloadProgressWatcherNoContext()
         }
     }
+
+    override fun onCancel() {
+
+        if(context != null){
+            updateNotification(context!!,-1)
+        }else{
+            throw throw DownloadProgressWatcherNoContext()
+        }
+    }
 }

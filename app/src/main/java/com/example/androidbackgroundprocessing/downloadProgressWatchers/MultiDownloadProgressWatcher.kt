@@ -16,5 +16,11 @@ class MultiDownloadProgressWatcher(val watchers: List<DownloadProgressWatcher>) 
         }
     }
 
+    override fun onCancel() {
+        watchers.forEach { watcher->
+            watcher.onCancel()
+        }
+    }
+
 
 }

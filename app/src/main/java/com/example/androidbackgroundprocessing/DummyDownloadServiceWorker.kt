@@ -39,6 +39,7 @@ class DummyDownloadServiceWorker(
 
 
     override fun onStopDownloadAction() {
+        downloadProgressNotifierClient.onCancel()
         dummyDownloadService.stopSelf()
         dummyDownloadService.stopForeground(STOP_FOREGROUND_REMOVE)
     }

@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
             textView.text = when(progress){
                 -1->"Download starting"
                 100->"Download completed"
+                -2->"Download cancelled"
                 else->"Download Progress : $progress%"
             }
         }
