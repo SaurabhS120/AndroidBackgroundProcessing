@@ -8,9 +8,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.any
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner ::class)
 class DummyDownloadServiceWorkerTest{
@@ -22,11 +19,11 @@ class DummyDownloadServiceWorkerTest{
     @Mock
     lateinit var dummyDownloadToastHelper:DownloadToastHelperInterface
     @Mock
-    lateinit var dummyDownloadService:DummyDownloadServiceInterface
+    lateinit var dummyDownloadService: DummyDownloadServiceInterface
     @Mock
-    lateinit var downloadProgressNotifierClient:DownloadProgressNotifierClientInterface
+    lateinit var downloadProgressNotifierClient: DownloadProgressNotifierClientInterface
 
-    lateinit var dummyDownloadServiceWorker:DummyDownloadServiceWorkerInterface
+    lateinit var dummyDownloadServiceWorker: DummyDownloadServiceWorkerInterface
 
     @Before
     fun setup(){
@@ -40,7 +37,7 @@ class DummyDownloadServiceWorkerTest{
 
     @Test
     fun `Foreground Service not supported test`(){
-        Mockito.`when`(downloadProgressNotifierClient.buildNotification(any())).thenAnswer {
+        Mockito.`when`(downloadProgressNotifierClient.buildNotification(Mockito.anyInt())).thenAnswer {
             Mockito.mock(Notification::class.java)
         }
         dummyDownloadServiceWorker.onStartDownloadAction()
