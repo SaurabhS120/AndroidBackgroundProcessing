@@ -2,7 +2,6 @@ package com.example.androidbackgroundprocessing
 
 import android.app.Notification
 import com.example.androidbackgroundprocessing.downloadProgressWatchers.DownloadToastHelperInterface
-import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,15 +16,15 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner ::class)
 class DummyDownloadServiceWorkerTest{
     @Mock
-    lateinit var dummyDownloadHelper : DummyDownloadHelperInterface
+    lateinit var mockDummyDownloadHelper : DummyDownloadHelperInterface
     @Mock
-    lateinit var dummyDownloadToastHelper:DownloadToastHelperInterface
+    lateinit var mockDummyDownloadToastHelper:DownloadToastHelperInterface
     @Mock
-    lateinit var dummyDownloadService: DummyDownloadServiceInterface
+    lateinit var mockDummyDownloadService: DummyDownloadServiceInterface
     @Mock
-    lateinit var downloadProgressNotifierClient: DownloadProgressNotifierClientInterface
+    lateinit var mockDownloadProgressNotifierClient: DownloadProgressNotifierClientInterface
     @Mock
-    lateinit var foregroundServiceHelper: ForegroundServiceHelperInterface
+    lateinit var mockForegroundServiceHelper: ForegroundServiceHelperInterface
 
     lateinit var dummyDownloadServiceWorker: DummyDownloadServiceWorkerInterface
 
@@ -42,38 +41,38 @@ class DummyDownloadServiceWorkerTest{
         dummyDownloadServiceWorker = DummyDownloadServiceWorker(
             serviceJob = serviceJob,
             serviceScope = serviceScope,
-            dummyDownloadHelper = dummyDownloadHelper,
-            dummyDownloadToastHelper = dummyDownloadToastHelper,
-            dummyDownloadService = dummyDownloadService,
-            downloadProgressNotifierClient = downloadProgressNotifierClient,
-            foregroundServiceHelper = foregroundServiceHelper
+            dummyDownloadHelper = mockDummyDownloadHelper,
+            dummyDownloadToastHelper = mockDummyDownloadToastHelper,
+            dummyDownloadService = mockDummyDownloadService,
+            downloadProgressNotifierClient = mockDownloadProgressNotifierClient,
+            foregroundServiceHelper = mockForegroundServiceHelper
         )
     }
 
     @Test
     fun `Foreground Service not supported test`(){
-        Mockito.`when`(downloadProgressNotifierClient.buildNotification(Mockito.anyInt())).thenAnswer {
+        Mockito.`when`(mockDownloadProgressNotifierClient.buildNotification(Mockito.anyInt())).thenAnswer {
             mockNotification
         }
-        Mockito.`when`(foregroundServiceHelper.startForegroundService(mockNotification)).thenAnswer {
+        Mockito.`when`(mockForegroundServiceHelper.startForegroundService(mockNotification)).thenAnswer {
             false
         }
         dummyDownloadServiceWorker.onStartDownloadAction()
-        Mockito.verify(dummyDownloadToastHelper,Mockito.times(1)).noNotificationNotSupported()
+        Mockito.verify(mockDummyDownloadToastHelper,Mockito.times(1)).noNotificationNotSupported()
     }
 
     @Test
     fun `Start test`(){
-        Mockito.`when`(downloadProgressNotifierClient.buildNotification(Mockito.anyInt())).thenAnswer {
+        Mockito.`when`(mockDownloadProgressNotifierClient.buildNotification(Mockito.anyInt())).thenAnswer {
             mockNotification
         }
-        Mockito.`when`(foregroundServiceHelper.startForegroundService(mockNotification)).thenAnswer {
+        Mockito.`when`(mockForegroundServiceHelper.startForegroundService(mockNotification)).thenAnswer {
             true
         }
         dummyDownloadServiceWorker.onStartDownloadAction()
         runBlocking{
             serviceJob.join()
-            Mockito.verify(dummyDownloadHelper, Mockito.times(1)).download()
+            Mockito.verify(mockDummyDownloadHelper, Mockito.times(1)).download()
         }
     }
 }
