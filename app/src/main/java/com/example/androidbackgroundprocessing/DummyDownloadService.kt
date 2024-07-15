@@ -22,7 +22,14 @@ class DummyDownloadService: Service() {
     @Inject lateinit var dummyDownloadHelper : DummyDownloadHelper
     @Inject lateinit var downloadProgressNotifierClient: DownloadProgressNotifierClient
     val dummyDownloadToastHelperInterface: DownloadToastHelperInterface = DownloadToastHelper(this)
-    val dummyDownloadServiceWorker: DummyDownloadServiceWorkerInterface = DummyDownloadServiceWorker(dummyDownloadHelper,downloadProgressNotifierClient,this,dummyDownloadToastHelperInterface)
+    val dummyDownloadServiceWorker: DummyDownloadServiceWorkerInterface by lazy {
+        DummyDownloadServiceWorker(
+            dummyDownloadHelper,
+            downloadProgressNotifierClient,
+            this,
+            dummyDownloadToastHelperInterface
+        )
+    }
 
 
     override fun onBind(intent: Intent?): IBinder? {
