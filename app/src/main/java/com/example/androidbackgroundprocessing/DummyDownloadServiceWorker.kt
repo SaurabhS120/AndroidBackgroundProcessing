@@ -6,20 +6,21 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import com.example.androidbackgroundprocessing.downloadProgressWatchers.DownloadProgressNotifierClient
 import com.example.androidbackgroundprocessing.downloadProgressWatchers.DownloadToastHelperInterface
+import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class DummyDownloadServiceWorker(
-    val dummyDownloadHelper : DummyDownloadHelper,
+    val dummyDownloadHelper : DummyDownloadHelperInterface,
     val downloadProgressNotifierClient: DownloadProgressNotifierClientInterface,
     val dummyDownloadService: DummyDownloadServiceInterface,
-    val dummyDownloadToastHelper: DownloadToastHelperInterface
+    val dummyDownloadToastHelper: DownloadToastHelperInterface,
+    val foregroundServiceHelper: ForegroundServiceHelperInterface,
+    private val serviceJob: Job = Job(),
+    private val serviceScope: CoroutineScope = CoroutineScope(Dispatchers.IO + serviceJob)
     ):DummyDownloadServiceWorkerInterface {
-
-    private val serviceJob = Job()
-    private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
     override fun onStartDownloadAction() {
         onCreate()
@@ -31,22 +32,7 @@ class DummyDownloadServiceWorker(
         }
     }
 
-    override fun startForegroundService(notification: Notification) :Boolean{
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            dummyDownloadService.startForeground(
-                1,
-                notification,
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_SHORT_SERVICE
-                } else {
-                    0
-                }
-            )
-            return true
-        } else {
-            return false
-        }
-    }
+    override fun startForegroundService(notification: Notification) :Boolean= foregroundServiceHelper.startForegroundService(notification)
 
     private fun onCreate() {
         downloadProgressNotifierClient.onCreate(dummyDownloadService.getContext())

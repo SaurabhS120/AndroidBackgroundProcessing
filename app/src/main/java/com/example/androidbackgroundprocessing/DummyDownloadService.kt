@@ -20,15 +20,17 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class DummyDownloadService: Service(),DummyDownloadServiceInterface {
 
-    @Inject lateinit var dummyDownloadHelper : DummyDownloadHelper
     @Inject lateinit var downloadProgressNotifierClient: DownloadProgressNotifierClient
+    @Inject lateinit var dummyDownloadHelper: DummyDownloadHelperInterface
     val dummyDownloadToastHelperInterface: DownloadToastHelperInterface = DownloadToastHelper(this)
+    val foregroundServiceHelper=ForegroundServiceHelper(this)
     val dummyDownloadServiceWorker: DummyDownloadServiceWorkerInterface by lazy {
         DummyDownloadServiceWorker(
             dummyDownloadHelper,
             downloadProgressNotifierClient,
             this,
-            dummyDownloadToastHelperInterface
+            dummyDownloadToastHelperInterface,
+            foregroundServiceHelper = foregroundServiceHelper
         )
     }
 

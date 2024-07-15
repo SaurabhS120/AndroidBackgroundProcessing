@@ -21,12 +21,6 @@ object DownloadModule {
         return DownloadProgressBroadcastHelper()
     }
 
-    @Provides
-    @Singleton
-    fun provideDummyDownloadHelper():DummyDownloadHelper{
-        return DummyDownloadHelper()
-    }
-
 }
 
 @Module
@@ -45,4 +39,10 @@ abstract class DownloadModuleAbstractions{
     @Binds
     @Singleton
     abstract fun provideDownloadProgressBroadcastHelper(downloadProgressBroadcastHelper: DownloadProgressBroadcastHelper): DownloadProgressBroadcastHelperInterface
+
+
+
+    @Binds
+    @Singleton
+    abstract fun provideDummyDownloadHelper(dummyDownloadHelper:DummyDownloadHelper):DummyDownloadHelperInterface
 }
