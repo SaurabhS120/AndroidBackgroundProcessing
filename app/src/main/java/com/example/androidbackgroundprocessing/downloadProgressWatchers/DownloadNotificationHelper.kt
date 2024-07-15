@@ -68,7 +68,7 @@ class DownloadNotificationHelper @Inject constructor(): DownloadNotificationHelp
         if(context != null){
             updateNotification(context!!,progress)
         }else{
-            throw Exception("Context is null, onCreate was not called")
+            throw throw DownloadProgressWatcherNoContext()
         }
     }
 }

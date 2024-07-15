@@ -39,7 +39,7 @@ class DownloadProgressNotifierClient @Inject constructor(
 
     private fun <T> withContext(context:Context?, action:(context:Context)->T):T{
         if(context == null){
-            throw Exception("Context should not be null, onCreate should be called before")
+            throw DownloadProgressWatcherNoContext()
         }else{
             return action(context)
         }

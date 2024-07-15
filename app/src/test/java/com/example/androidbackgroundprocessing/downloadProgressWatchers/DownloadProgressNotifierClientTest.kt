@@ -17,10 +17,10 @@ class DownloadProgressNotifierClientTest {
     private lateinit var mockContext: Context
 
     @Mock
-    private lateinit var downloadProgressBroadcastHelper:DownloadProgressBroadcastHelper
+    private lateinit var downloadProgressBroadcastHelper:DownloadProgressBroadcastHelperInterface
 
     @Mock
-    private lateinit var downloadNotificationHelper:DownloadNotificationHelper
+    private lateinit var downloadNotificationHelper:DownloadNotificationHelperInterface
     private lateinit var client:DownloadProgressNotifierClientInterface
 
     @Before
@@ -36,5 +36,10 @@ class DownloadProgressNotifierClientTest {
         client.onCreate(mockContext)
         val notification = client.buildNotification()
 
+    }
+
+    @Test(expected = DownloadProgressWatcherNoContext::class)
+    fun buildNotificationFailTest(){
+        val notification = client.buildNotification()
     }
 }

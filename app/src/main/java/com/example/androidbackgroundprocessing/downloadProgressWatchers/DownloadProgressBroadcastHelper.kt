@@ -26,7 +26,7 @@ class DownloadProgressBroadcastHelper @Inject constructor(): DownloadProgressBro
         if(context != null){
             broadcastProgress(context!!,progress)
         }else{
-            throw Exception("Context is null, onCreate was not called")
+            throw DownloadProgressWatcherNoContext()
         }
     }
 }
