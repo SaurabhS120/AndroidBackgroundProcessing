@@ -63,6 +63,8 @@ dependencies {
     // Unit testing dependencies
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:3.11.2")
+    testImplementation("org.mockito:mockito-inline:4.3.1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     testImplementation("androidx.test:core:1.4.0")
     testImplementation("androidx.test.ext:junit:1.1.3")
     testImplementation("androidx.test.ext:truth:1.4.0")

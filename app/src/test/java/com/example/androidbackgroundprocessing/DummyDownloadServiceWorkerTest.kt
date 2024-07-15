@@ -5,10 +5,12 @@ import com.example.androidbackgroundprocessing.downloadProgressWatchers.Download
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner ::class)
 class DummyDownloadServiceWorkerTest{
@@ -38,7 +40,7 @@ class DummyDownloadServiceWorkerTest{
 
     @Test
     fun `Foreground Service not supported test`(){
-        Mockito.`when`(downloadProgressNotifierClient.buildNotification(-1)).thenAnswer {
+        Mockito.`when`(downloadProgressNotifierClient.buildNotification(any())).thenAnswer {
             Mockito.mock(Notification::class.java)
         }
         dummyDownloadServiceWorker.onStartDownloadAction()
