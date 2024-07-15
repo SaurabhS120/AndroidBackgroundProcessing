@@ -5,6 +5,9 @@ import com.example.androidbackgroundprocessing.downloadProgressWatchers.Download
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -73,6 +76,24 @@ class DummyDownloadServiceWorkerTest{
         runBlocking{
             serviceJob.join()
             Mockito.verify(mockDummyDownloadHelper, Mockito.times(1)).download()
+        }
+    }
+
+    @Test
+    fun `Progress update test`(){
+        Mockito.`when`(mockDownloadProgressNotifierClient.buildNotification(Mockito.anyInt())).thenAnswer {
+            mockNotification
+        }
+        Mockito.`when`(mockForegroundServiceHelper.startForegroundService(mockNotification)).thenAnswer {
+            true
+        }
+        Mockito.`when`(mockDummyDownloadHelper.download()).thenAnswer {
+            (1..5).asFlow()
+        }
+        dummyDownloadServiceWorker.onStartDownloadAction()
+        runBlocking {
+            delay(100)
+            Mockito.verify(mockDownloadProgressNotifierClient, Mockito.times(5)).onUpdate(Mockito.anyInt())
         }
     }
 }
