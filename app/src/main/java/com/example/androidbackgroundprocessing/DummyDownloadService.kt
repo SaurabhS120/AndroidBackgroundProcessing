@@ -6,6 +6,11 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import android.widget.Toast
+import com.example.androidbackgroundprocessing.downloadProgressWatchers.DownloadNotificationHelper
+import com.example.androidbackgroundprocessing.downloadProgressWatchers.DownloadProgressBroadcastHelper
+import com.example.androidbackgroundprocessing.downloadProgressWatchers.DownloadProgressNotifierClient
+import com.example.androidbackgroundprocessing.downloadProgressWatchers.DownloadProgressWatcher
+import com.example.androidbackgroundprocessing.downloadProgressWatchers.MultiDownloadProgressWatcher
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,17 +20,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class DummyDownloadService: Service() {
-    @Inject lateinit var downloadBroadcastHelper : DownloadProgressBroadcastHelper
-    @Inject lateinit var notificationHelper : DownloadNotificationHelper
     @Inject lateinit var dummyDownloadHelper : DummyDownloadHelper
-    val downloadProgressWatcher:DownloadProgressWatcher by  lazy {
-        return@lazy MultiDownloadProgressWatcher(
-            listOf(
-                notificationHelper,
-                downloadBroadcastHelper,
-            )
-        )
-    }
+    @Inject lateinit var downloadProgressNotifierClient: DownloadProgressNotifierClient
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
     override fun onBind(intent: Intent?): IBinder? {
@@ -39,6 +35,7 @@ class DummyDownloadService: Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action.toString()) {
             DownloadActions.START.toString()->{
+                downloadProgressNotifierClient.onCreate(this)
                 val notification = buildNotification()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     startForeground(
@@ -50,7 +47,6 @@ class DummyDownloadService: Service() {
                             0
                         }
                     )
-                    downloadProgressWatcher.onCreate(this)
                     onStartDownload()
                 } else {
                     Toast.makeText(
@@ -72,7 +68,7 @@ class DummyDownloadService: Service() {
     private fun onStartDownload() {
         serviceScope.launch {
             dummyDownloadHelper.download().collect{
-                downloadProgressWatcher.onUpdate(it)
+                downloadProgressNotifierClient.onUpdate(it)
             }
             stopSelf()
         }
@@ -84,5 +80,5 @@ class DummyDownloadService: Service() {
         stopForeground(STOP_FOREGROUND_REMOVE)
     }
 
-    fun buildNotification(progress: Int = 0)=notificationHelper.buildNotification(this,progress)
+    fun buildNotification(progress: Int = 0)=downloadProgressNotifierClient.buildNotification(progress)
 }

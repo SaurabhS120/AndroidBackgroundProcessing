@@ -1,4 +1,4 @@
-package com.example.androidbackgroundprocessing
+package com.example.androidbackgroundprocessing.downloadProgressWatchers
 
 import android.Manifest
 import android.app.Notification
@@ -9,8 +9,10 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.example.androidbackgroundprocessing.DummyDownloadService
+import com.example.androidbackgroundprocessing.R
 
-class DownloadNotificationHelper:DownloadProgressWatcher{
+class DownloadNotificationHelper: DownloadProgressWatcher {
     private var notificationBuilder : NotificationCompat.Builder? = null
     fun buildNotification(context: Context, progress: Int = 0): Notification {
         if(notificationBuilder==null){

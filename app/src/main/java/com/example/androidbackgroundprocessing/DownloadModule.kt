@@ -1,5 +1,9 @@
 package com.example.androidbackgroundprocessing
 
+import com.example.androidbackgroundprocessing.downloadProgressWatchers.DownloadNotificationHelper
+import com.example.androidbackgroundprocessing.downloadProgressWatchers.DownloadProgressBroadcastHelper
+import com.example.androidbackgroundprocessing.downloadProgressWatchers.DownloadProgressNotifierClient
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,13 +15,13 @@ import javax.inject.Singleton
 object DownloadModule {
     @Provides
     @Singleton
-    fun provideDownloadProgressBroadcastHelper():DownloadProgressBroadcastHelper{
+    fun provideDownloadProgressBroadcastHelper(): DownloadProgressBroadcastHelper {
         return DownloadProgressBroadcastHelper()
     }
 
     @Provides
     @Singleton
-    fun provideDownloadNotificationHelper():DownloadNotificationHelper{
+    fun provideDownloadNotificationHelper(): DownloadNotificationHelper {
         return DownloadNotificationHelper()
     }
 
@@ -26,4 +30,14 @@ object DownloadModule {
     fun provideDummyDownloadHelper():DummyDownloadHelper{
         return DummyDownloadHelper()
     }
+
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class DownloadModuleAbstractions{
+
+    @Binds
+    @Singleton
+    abstract fun provideDownloadProgressNotifierClient(downloadProgressNotifierClient:DownloadProgressNotifierClient):DownloadProgressNotifierClientInterface
 }

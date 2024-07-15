@@ -1,8 +1,9 @@
-package com.example.androidbackgroundprocessing
+package com.example.androidbackgroundprocessing.downloadProgressWatchers
 
 import android.content.Context
 
-class MultiDownloadProgressWatcher(val watchers: List<DownloadProgressWatcher>) : DownloadProgressWatcher{
+class MultiDownloadProgressWatcher(val watchers: List<DownloadProgressWatcher>) :
+    DownloadProgressWatcher {
     override fun onCreate(context: Context) {
         watchers.forEach { watcher->
             watcher.onCreate(context)
