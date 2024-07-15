@@ -33,9 +33,6 @@ class DummyDownloadServiceWorkerTest{
 
     val mockNotification = Mockito.mock(Notification::class.java)
 
-    lateinit var serviceJob : Job
-    lateinit var serviceScope: CoroutineScope
-
 
     @Before
     fun setup(){
@@ -71,9 +68,11 @@ class DummyDownloadServiceWorkerTest{
         Mockito.`when`(mockForegroundServiceHelper.startForegroundService(mockNotification)).thenAnswer {
             true
         }
+        Mockito.`when`(mockDummyDownloadHelper.download()).thenAnswer {
+            flow<Int> {  }
+        }
         runBlocking{
             dummyDownloadServiceWorker.onStartDownloadAction()
-            serviceJob.join()
             Mockito.verify(mockDummyDownloadHelper, Mockito.times(1)).download()
         }
     }
