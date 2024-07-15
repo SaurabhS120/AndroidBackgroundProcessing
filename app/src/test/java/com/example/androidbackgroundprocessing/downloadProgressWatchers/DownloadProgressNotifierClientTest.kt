@@ -35,13 +35,13 @@ class DownloadProgressNotifierClientTest {
     @Test
     fun buildNotification(){
         client.onCreate(mockContext)
-        val notification = client.buildNotification()
+        val notification = client.buildNotification(-1)
 
     }
 
     @Test(expected = DownloadProgressWatcherNoContext::class)
     fun buildNotificationFailTest(){
-        val notification = client.buildNotification()
+        val notification = client.buildNotification(-1)
     }
 
     @Test

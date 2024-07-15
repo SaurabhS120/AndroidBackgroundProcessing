@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class DummyDownloadServiceWorker(
     val dummyDownloadHelper : DummyDownloadHelper,
-    val downloadProgressNotifierClient: DownloadProgressNotifierClient,
+    val downloadProgressNotifierClient: DownloadProgressNotifierClientInterface,
     val dummyDownloadService: DummyDownloadServiceInterface,
     val dummyDownloadToastHelper: DownloadToastHelperInterface
     ):DummyDownloadServiceWorkerInterface {
@@ -23,7 +23,7 @@ class DummyDownloadServiceWorker(
 
     override fun onStartDownloadAction() {
         onCreate()
-        val notification = buildNotification()
+        val notification = buildNotification(-1)
         if(startForegroundService(notification)){
             onStartDownload()
         }else{
@@ -70,5 +70,5 @@ class DummyDownloadServiceWorker(
     override fun onCancel() {
         serviceJob.cancel()
     }
-    fun buildNotification(progress: Int = 0)=downloadProgressNotifierClient.buildNotification(progress)
+    fun buildNotification(progress: Int)=downloadProgressNotifierClient.buildNotification(progress)
 }
