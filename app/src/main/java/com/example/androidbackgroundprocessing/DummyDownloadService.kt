@@ -1,6 +1,7 @@
 package com.example.androidbackgroundprocessing
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
@@ -17,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DummyDownloadService: Service() {
+class DummyDownloadService: Service(),DummyDownloadServiceInterface {
 
     @Inject lateinit var dummyDownloadHelper : DummyDownloadHelper
     @Inject lateinit var downloadProgressNotifierClient: DownloadProgressNotifierClient
@@ -52,6 +53,10 @@ class DummyDownloadService: Service() {
     override fun onDestroy() {
         super.onDestroy()
         dummyDownloadServiceWorker.onCancel()
+    }
+
+    override fun getContext(): Context {
+        return this
     }
 
 }

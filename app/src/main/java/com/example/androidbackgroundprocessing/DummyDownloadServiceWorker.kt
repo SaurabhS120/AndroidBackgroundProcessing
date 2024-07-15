@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 class DummyDownloadServiceWorker(
     val dummyDownloadHelper : DummyDownloadHelper,
     val downloadProgressNotifierClient: DownloadProgressNotifierClient,
-    val dummyDownloadService: DummyDownloadService,
+    val dummyDownloadService: DummyDownloadServiceInterface,
     val dummyDownloadToastHelper: DownloadToastHelperInterface
     ):DummyDownloadServiceWorkerInterface {
 
@@ -49,7 +49,7 @@ class DummyDownloadServiceWorker(
     }
 
     private fun onCreate() {
-        downloadProgressNotifierClient.onCreate(dummyDownloadService)
+        downloadProgressNotifierClient.onCreate(dummyDownloadService.getContext())
     }
 
 
